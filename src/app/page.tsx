@@ -134,7 +134,7 @@ export default function Home() {
         </div>
       </header>
 
-      <main ref={chatContainerRef} className="flex-1 overflow-y-auto p-4" style={{ backgroundImage: "url('https://i.redd.it/qwd83gr4b2581.png')", backgroundSize: 'contain', backgroundRepeat: 'repeat' }}>
+      <main ref={chatContainerRef} className="flex-1 overflow-y-auto p-4">
         <div className="flex justify-center my-2">
             <div className="bg-[#1a2831] px-3 py-1.5 rounded-lg text-xs text-gray-400">
                 Today
