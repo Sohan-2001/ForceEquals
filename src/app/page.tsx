@@ -57,13 +57,15 @@ export default function Home() {
     setIsUploading(true);
 
     if (file.type !== 'application/pdf') {
-      toast({
-        variant: 'destructive',
-        title: 'Invalid File Type',
-        description: 'Please upload a PDF document.',
-      });
-      setIsUploading(false);
-      return;
+        setTimeout(() => {
+            toast({
+                variant: 'destructive',
+                title: 'Invalid File Type',
+                description: 'Please upload a PDF document.',
+            });
+        }, 0);
+        setIsUploading(false);
+        return;
     }
 
     const reader = new FileReader();
@@ -76,11 +78,13 @@ export default function Home() {
     };
     reader.onerror = () => {
         setIsUploading(false);
-        toast({
-            variant: 'destructive',
-            title: 'File Read Error',
-            description: 'There was an error reading the PDF file.',
-        });
+        setTimeout(() => {
+            toast({
+                variant: 'destructive',
+                title: 'File Read Error',
+                description: 'There was an error reading the PDF file.',
+            });
+        }, 0);
     }
     reader.readAsDataURL(file);
   };
