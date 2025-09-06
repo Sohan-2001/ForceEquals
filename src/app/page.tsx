@@ -188,9 +188,6 @@ export default function Home() {
       <footer className="p-2.5 bg-[#202c33]">
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="flex items-center gap-3">
-                <Button type="button" variant="ghost" size="icon" onClick={handleUploadClick} title="Upload PDF">
-                    <Paperclip className='text-gray-400' />
-                </Button>
                 <input
                     ref={fileInputRef}
                     type="file"
