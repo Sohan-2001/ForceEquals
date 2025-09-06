@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, ChangeEvent, useTransition, useEffect } from 'react';
-import { Loader2, Paperclip, Send, Bot, User, Lock, Video, Phone, Search } from 'lucide-react';
+import { Loader2, Paperclip, Send, Search, Lock } from 'lucide-react';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -115,7 +115,7 @@ export default function Home() {
   }
 
   return (
-    <div className="flex flex-col h-screen bg-[#0b141a] text-gray-200 font-sans">
+    <div className="flex flex-col h-screen bg-black text-gray-200 font-sans">
       <header className="flex items-center justify-between p-2.5 bg-[#202c33] border-b border-gray-700">
         <div className="flex items-center gap-4">
             <Avatar>
@@ -128,8 +128,6 @@ export default function Home() {
             </div>
         </div>
         <div className="flex items-center gap-4 text-gray-400">
-            <Video className="cursor-pointer" />
-            <Phone className="cursor-pointer" />
             <Search className="cursor-pointer" />
         </div>
       </header>
