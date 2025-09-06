@@ -11,7 +11,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Textarea } from '@/components/ui/textarea';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { useToast } from '@/hooks/use-toast';
-import { getSummary, getAnswer } from './actions';
+import { getAnswer } from './actions';
 import { Skeleton } from '@/components/ui/skeleton';
 
 const formSchema = z.object({
@@ -22,10 +22,8 @@ const formSchema = z.object({
 
 export default function Home() {
   const [pdfFile, setPdfFile] = useState<{ name: string; dataUri: string } | null>(null);
-  const [summary, setSummary] = useState<string | null>(null);
   const [answer, setAnswer] = useState<string | null>(null);
   
-  const [isSummarizing, startSummaryTransition] = useTransition();
   const [isAnswering, startAnswerTransition] = useTransition();
   
   const { toast } = useToast();
@@ -57,21 +55,6 @@ export default function Home() {
       setPdfFile({ name: file.name, dataUri });
       form.reset();
       setAnswer(null);
-
-      startSummaryTransition(async () => {
-        setSummary(null);
-        const result = await getSummary(dataUri);
-        if (result.error) {
-          toast({
-            variant: 'destructive',
-            title: 'Summarization Failed',
-            description: result.error,
-          });
-          setSummary('Could not generate a summary for this document.');
-        } else {
-          setSummary(result.data || 'No summary could be generated.');
-        }
-      });
     };
     reader.readAsDataURL(file);
   };
@@ -150,7 +133,6 @@ export default function Home() {
                     <p className="font-semibold truncate">{pdfFile.name}</p>
                     <Button variant="link" size="sm" className="p-0 h-auto" onClick={() => {
                       setPdfFile(null);
-                      setSummary(null);
                       setAnswer(null);
                       form.reset();
                     }}>
@@ -158,16 +140,7 @@ export default function Home() {
                     </Button>
                   </div>
                   
-                  <h3 className="font-semibold mb-2">Summary</h3>
-                  {isSummarizing ? (
-                    <div className="space-y-2">
-                        <Skeleton className="h-4 w-full" />
-                        <Skeleton className="h-4 w-full" />
-                        <Skeleton className="h-4 w-3/4" />
-                    </div>
-                  ) : (
-                    <p className="text-sm text-muted-foreground whitespace-pre-wrap">{summary}</p>
-                  )}
+                  <p className='text-sm text-muted-foreground'>Your document has been uploaded. You can now ask questions about it.</p>
                 </div>
               )}
             </CardContent>
