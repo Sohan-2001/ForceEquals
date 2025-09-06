@@ -135,10 +135,13 @@ export default function Home() {
                 <AvatarImage src="https://picsum.photos/100" alt="Arunava Dutta" />
                 <AvatarFallback>AD</AvatarFallback>
             </Avatar>
-            <div>
+        </div>
+        <div className="flex-1 text-center">
+            {pdfFile ? (
+                <p className="font-semibold text-teal-400 animate-pulse">Chatting with {pdfFile.name}</p>
+            ) : (
                 <p className="font-semibold">PDF Insights</p>
-                <p className="text-xs text-gray-400">{pdfFile ? `Chatting with ${pdfFile.name}` : 'Offline'}</p>
-            </div>
+            )}
         </div>
         <div className="flex items-center gap-4 text-gray-400">
             <Search className="cursor-pointer" />
