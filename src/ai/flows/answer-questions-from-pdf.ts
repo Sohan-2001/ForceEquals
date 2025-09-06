@@ -23,7 +23,7 @@ const AnswerQuestionsFromPdfInputSchema = z.object({
 export type AnswerQuestionsFromPdfInput = z.infer<typeof AnswerQuestionsFromPdfInputSchema>;
 
 const AnswerQuestionsFromPdfOutputSchema = z.object({
-  answer: z.string().describe('The answer to the question based on the PDF content.'),
+  answer: z.string().describe('The answer to the question based on the PDF content, formatted in Markdown.'),
 });
 export type AnswerQuestionsFromPdfOutput = z.infer<typeof AnswerQuestionsFromPdfOutputSchema>;
 
@@ -39,7 +39,7 @@ const prompt = ai.definePrompt({
   output: {schema: AnswerQuestionsFromPdfOutputSchema},
   prompt: `You are an AI assistant that answers questions based on the content of a PDF document.
 
-  Use the document provided to answer the question.
+  Use the document provided to answer the question. Your answer should be formatted in Markdown, using headings, bold text, lists, and paragraphs to improve readability.
 
   Question: {{{question}}}
   PDF Document: {{media url=pdfDataUri}}`,

@@ -5,6 +5,7 @@ import { Loader2, Paperclip, Send, Search, Lock } from 'lucide-react';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import ReactMarkdown from 'react-markdown';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -170,7 +171,9 @@ export default function Home() {
                         </div>
                     ) : (
                         <div>
-                            <p className="text-sm">{msg.text}</p>
+                            <div className="prose prose-sm prose-invert text-white">
+                                <ReactMarkdown>{msg.text || ''}</ReactMarkdown>
+                            </div>
                             <p className="text-xs text-gray-400 text-right mt-1">{msg.timestamp}</p>
                         </div>
                     )}
