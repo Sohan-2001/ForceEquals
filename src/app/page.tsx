@@ -11,7 +11,7 @@ import { Input } from '@/components/ui/input';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { useToast } from '@/hooks/use-toast';
 import { getAnswer } from './actions';
-import { Form } from '@/components/ui/form';
+import { Form, FormControl, FormField, FormItem } from '@/components/ui/form';
 
 const formSchema = z.object({
   question: z.string().min(1, {
@@ -29,6 +29,7 @@ interface Message {
 export default function Home() {
   const [pdfFile, setPdfFile] = useState<{ name: string; dataUri: string } | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
+  const [isUploading, setIsUploading] = useState(false);
   
   const [isAnswering, startAnswerTransition] = useTransition();
   
@@ -53,12 +54,15 @@ export default function Home() {
     const file = event.target.files?.[0];
     if (!file) return;
 
+    setIsUploading(true);
+
     if (file.type !== 'application/pdf') {
       toast({
         variant: 'destructive',
         title: 'Invalid File Type',
         description: 'Please upload a PDF document.',
       });
+      setIsUploading(false);
       return;
     }
 
@@ -68,7 +72,16 @@ export default function Home() {
       setPdfFile({ name: file.name, dataUri });
       setMessages([]);
       form.reset();
+      setIsUploading(false);
     };
+    reader.onerror = () => {
+        setIsUploading(false);
+        toast({
+            variant: 'destructive',
+            title: 'File Read Error',
+            description: 'There was an error reading the PDF file.',
+        });
+    }
     reader.readAsDataURL(file);
   };
   
@@ -132,7 +145,7 @@ export default function Home() {
         </div>
       </header>
 
-      <main ref={chatContainerRef} className="flex-1 overflow-y-auto p-4">
+      <main ref={chatContainerRef} className="flex-1 overflow-y-auto p-4 bg-black">
         <div className="flex justify-center my-2">
             <div className="bg-[#1a2831] px-3 py-1.5 rounded-lg text-xs text-gray-400">
                 Today
@@ -164,7 +177,7 @@ export default function Home() {
             </div>
         </div>
 
-        {!pdfFile && (
+        {!pdfFile && !isUploading && (
             <div className="flex flex-col items-center justify-center h-full text-center">
                 <div className='p-8 bg-[#202c33]/80 rounded-lg shadow-lg backdrop-blur-sm'>
                     <h2 className="text-xl font-semibold mb-4">Start a conversation</h2>
@@ -183,24 +196,33 @@ export default function Home() {
                 </div>
             </div>
         )}
+
+        {isUploading && (
+          <div className="absolute inset-0 flex items-center justify-center bg-black/50">
+            <Loader2 className="h-12 w-12 animate-spin text-white" />
+          </div>
+        )}
       </main>
       
       <footer className="p-2.5 bg-[#202c33]">
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="flex items-center gap-3">
-                <input
-                    ref={fileInputRef}
-                    type="file"
-                    accept="application/pdf"
-                    className="hidden"
-                    onChange={handleFileChange}
-                />
-                <Input 
-                    {...form.register('question')}
-                    placeholder="Type a message..." 
-                    autoComplete="off"
-                    disabled={!pdfFile || isAnswering}
-                    className="flex-1 bg-[#2a3942] border-none text-gray-200 placeholder-gray-400"
+                <FormField
+                    control={form.control}
+                    name="question"
+                    render={({ field }) => (
+                        <FormItem className='flex-1'>
+                            <FormControl>
+                                <Input 
+                                    {...field}
+                                    placeholder="Type a message..." 
+                                    autoComplete="off"
+                                    disabled={!pdfFile || isAnswering}
+                                    className="bg-[#2a3942] border-none text-gray-200 placeholder-gray-400"
+                                />
+                            </FormControl>
+                        </FormItem>
+                    )}
                 />
                 <Button type="submit" size="icon" disabled={!pdfFile || isAnswering} className='bg-teal-600 hover:bg-teal-700 rounded-full'>
                     {isAnswering ? <Loader2 className="animate-spin" /> : <Send />}
