@@ -33,41 +33,16 @@ export async function answerQuestionsFromPdf(
   return answerQuestionsFromPdfFlow(input);
 }
 
-const extractPdfContent = ai.defineTool({
-  name: 'extractPdfContent',
-  description: 'Extracts the text content from a PDF document provided as a data URI.',
-  inputSchema: z.object({
-    pdfDataUri: z
-      .string()
-      .describe(
-        'The PDF document as a data URI that must include a MIME type and use Base64 encoding. Expected format: \'data:<mimetype>;base64,<encoded_data>\'.'      
-      ),
-  }),
-  outputSchema: z.string().describe('The extracted text content of the PDF document.'),
-}, async (input) => {
-    // TODO: Implement the PDF content extraction logic here.
-    // This is a placeholder implementation.
-    // In a real application, you would use a library like pdf-parse to extract the text.
-    // For example:
-    // const pdfBuffer = Buffer.from(input.pdfDataUri.split(',')[1], 'base64');
-    // const pdf = await pdfParse(pdfBuffer);
-    // return pdf.text;
-    console.log("extractPdfContent tool was called, but PDF parsing is not yet implemented.");
-    return 'PLACEHOLDER: PDF content extraction is not yet implemented.';
-  });
-
 const prompt = ai.definePrompt({
   name: 'answerQuestionsFromPdfPrompt',
   input: {schema: AnswerQuestionsFromPdfInputSchema},
   output: {schema: AnswerQuestionsFromPdfOutputSchema},
-  tools: [extractPdfContent],
   prompt: `You are an AI assistant that answers questions based on the content of a PDF document.
 
-  The PDF document content will be extracted using the extractPdfContent tool.
-  Use the tool to get the PDF content and then answer the question.
+  Use the document provided to answer the question.
 
   Question: {{{question}}}
-  PDF Content: {{await tools.extractPdfContent({pdfDataUri: pdfDataUri})}}`,
+  PDF Document: {{media url=pdfDataUri}}`,
 });
 
 const answerQuestionsFromPdfFlow = ai.defineFlow(
